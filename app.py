@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import os
 from datetime import datetime
+from local_face_Agent import LocalFaceAgent  # ✅ Import the recognition agent
 
 # --- Page Configuration ---
 st.set_page_config(
@@ -135,9 +136,14 @@ with col3:
 if menu == "Live Recognition":
     st.markdown('<div class="subheader">Live Face Recognition</div>', unsafe_allow_html=True)
     st.info("Click below to start recognition via webcam. The camera will close automatically after detection.")
+
     if st.button("Start Live Recognition"):
-        os.system("python local_face_agent.py")
-        st.success("Recognition session completed successfully.")
+        try:
+            agent = LocalFaceAgent()
+            result_msg = agent.start_recognition()  # ✅ Run function directly
+            st.success(result_msg or "Recognition session completed successfully.")
+        except Exception as e:
+            st.error(f"Recognition failed: {e}")
 
 elif menu == "Register New User":
     st.markdown('<div class="subheader">Register New Employee</div>', unsafe_allow_html=True)
